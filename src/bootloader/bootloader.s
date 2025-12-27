@@ -1,49 +1,63 @@
+org 0x7C00  ; Add 0x7C00 to label addresses
+bits 16  ; Real mode
+
+; Segments
+mov ax, 0
+mov ds, ax
+mov es, ax
+mov ss, ax ; stack
+mov sp, 0x7C00 ; stack from 7C00
+
+; =======
+; main
+; =======
+
+extern clear_screen
+extern print_string
+extern get_command
+
+; Clear BIOS messages
 call clear_screen
 
-mov ah, 0xE
-mov bx, 0
+; Print welcome message
+mov si, welcome_msg
+call print_string
 
 loop:
-	mov al, [0x7C00 + bx + success_boot_msg]
-
-	cmp al, 0
-	je loop_end
-
-	int 0x10
-	inc bx
-
+	mov si, prompt
+	call print_string
+	call get_command
 	jmp loop
+end:
+	jmp halt
 
-loop_end:
-
-
-jmp $
-
-; Functions
-
-clear_screen:
-	mov ah, 0x06
-	mov al, 0
-
-	mov bh, 0x07
-	mov cx, 0000
-	mov dx, 0x184F
-	int 0x10
-	
-	mov ah, 0x02
-	mov bh, 0
-	mov dh, 0
-	mov dl, 0
-	int 0x10
-
-	ret
+; =======
+; Calls
+; =======
 
 ; Data
+welcome_msg	db "Hello, user of KittenOS!", 0x0D, 0x0A, 0
+bad_command	db "Unknown command", 0x0D, 0x0A , 0
+halt_msg	db "Shutting down machine", 0x0D, 0x0A, 0
 
-success_boot_msg:
-	db "Hello, World!", 0
+prompt db "~ $ ", 0
+newline db 0x0D, 0x0a, 0
 
-; Boot
-times 510-($-$$) db 0  ; fill to 512
-dw 0xAA55  ; boot signature
+buffer times 64 db 0
+
+; End
+
+halt:
+	mov si, newline
+	call print_string
+
+	mov si, halt_msg
+	call print_string
+
+	cli
+	hlt
+
+
+times 510-($-$$) db 0  ; Set size 510 byte
+dw 0xAA55  ; add boot signature
 
