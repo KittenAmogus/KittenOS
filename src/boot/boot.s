@@ -10,7 +10,7 @@ bits 16
 	mov si, welcome_message
 	call print
 
-	jmp $
+	jmp halt
 
 ; Constants
 
@@ -49,7 +49,9 @@ print:
 
 ; Stack
 
-
+halt:
+	cli
+	hlt
 
 ; Boot
 times 510-($-$$) db 0
