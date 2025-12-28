@@ -7,14 +7,35 @@ bits 16
 	
 	call clear
 
-	mov si, welcome_message
+	mov si, fetch_lines
 	call print
+
+	.loop:
+		call input
+		jmp .loop
 
 	jmp halt
 
 ; Constants
 
-welcome_message	db "Hello, World", 00
+welcome_message	db "Hello, World", 0x0D, 0x0A, 0
+prompt			db "D:/> ", 0
+newline			db 0x0D, 0x0A, 0
+interrupt_msg	db "^C", 0x0D, 0x0A, 0
+halt_msg		db 0x0D, 0x0A, "exit", 0x0D, 0x0A, 0
+
+fetch_lines:
+	db "         <>                   ", 0x0D, 0x0A
+	db "         /\                   ", 0x0D, 0x0A
+	db "        /..\         NEW YEAR!", 0x0D, 0x0A
+	db "       /....\          2026   ", 0x0D, 0x0A
+	db "      /......\                ", 0x0D, 0x0A
+	db "     /........\               ", 0x0D, 0x0A
+	db "    /..........\              ", 0x0D, 0x0A
+	db "   /............\             ", 0x0D, 0x0A
+	db "  /..............\            ", 0x0D, 0x0A
+	db " /................\           ", 0x0D, 0x0A,
+	db "                              ", 0x0D, 0x0A, 0
 
 ; Functions
 
@@ -47,9 +68,43 @@ print:
 	.done:
 		ret
 
+input:
+	mov si, prompt
+	call print
+
+	.loop:
+		mov ah, 0
+		int 0x16
+
+		cmp ah, 1Ch	; ENTER
+		je .done
+
+		cmp al, 3	; ^C
+		je .int
+
+		cmp al, 4	; ^D
+		je halt
+
+		mov ah, 0x0E
+		int 0x10
+
+		jmp .loop
+	.done:
+		mov si, newline
+		call print
+		ret
+	.int:
+		mov si, interrupt_msg
+		call print
+		ret
+
 ; Stack
 
+stack:
+
 halt:
+	mov si, halt_msg
+	call print
 	cli
 	hlt
 
