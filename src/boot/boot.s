@@ -1,114 +1,48 @@
 bits 16
-
 [org 0x7C00]
-	mov ax, 0
-	mov ds, ax
-	mov es, ax
-	
-	call clear
-
-	mov si, fetch_lines
+	mov si, text
 	call print
+	
+	jmp $			; if failed to load, do nothing forever
 
-	.loop:
-		call input
-		jmp .loop
-
-	jmp halt
-
-; Constants
-
-welcome_message	db "Hello, World", 0x0D, 0x0A, 0
-prompt			db "D:/> ", 0
-newline			db 0x0D, 0x0A, 0
-interrupt_msg	db "^C", 0x0D, 0x0A, 0
-halt_msg		db 0x0D, 0x0A, "exit", 0x0D, 0x0A, 0
-
-fetch_lines:
-	db "         <>                   ", 0x0D, 0x0A
-	db "         /\                   ", 0x0D, 0x0A
-	db "        /..\         NEW YEAR!", 0x0D, 0x0A
-	db "       /....\          2026   ", 0x0D, 0x0A
-	db "      /......\                ", 0x0D, 0x0A
-	db "     /........\               ", 0x0D, 0x0A
-	db "    /..........\              ", 0x0D, 0x0A
-	db "   /............\             ", 0x0D, 0x0A
-	db "  /..............\            ", 0x0D, 0x0A
-	db " /................\           ", 0x0D, 0x0A,
-	db "                              ", 0x0D, 0x0A, 0
+; Data
+text: db "Booting KittenOS...", 10, 13, 0
 
 ; Functions
-
-clear:
-	mov ah, 0x07
-	mov al, 0
-	mov bh, 0x07
-	mov cx, 0x0000
-	mov dx, 0x184F
-	int 0x10
-
-	mov ah, 0x02
-	mov bh, 0
-	mov dh, 0
-	mov dl, 0
-	int 0x10
-
-	ret
-
 print:
-	lodsb		; load from si
-	
-	cmp al, 0
-	je .done
-
-	mov ah, 0x0E
-	int 0x10
-	jmp print
-
-	.done:
-		ret
-
-input:
-	mov si, prompt
-	call print
-
+	mov ah, 0x0E	; For int 0x10 - print
 	.loop:
-		mov ah, 0
-		int 0x16
+		lodsb		; Load si
 
-		cmp ah, 1Ch	; ENTER
+		cmp al, 0	; If end of string
 		je .done
 
-		cmp al, 3	; ^C
-		je .int
-
-		cmp al, 4	; ^D
-		je halt
-
-		mov ah, 0x0E
-		int 0x10
-
+		int 0x10	; Print char from al
 		jmp .loop
+	
 	.done:
-		mov si, newline
-		call print
-		ret
-	.int:
-		mov si, interrupt_msg
-		call print
-		ret
+		jmp load	; Load kernel after print
 
-; Stack
+load:
+	cld				; Clear direction flag
 
-stack:
+	mov ax, 0		; For segment
+	mov ss, ax
+	mov sp, 0x7C00	; Stack from 0x07C00
 
-halt:
-	mov si, halt_msg
-	call print
-	cli
-	hlt
+	mov bx, 0x7E00
+	mov es, ax		; Read sector start from 0x7E00
+
+	mov ah, 2		; Some boot stuff
+	mov al, 1
+	mov ch, 0
+	mov cl, 2
+	mov dh, 0
+
+	int 0x13
+
+	jmp 0x0000:0x7E00	; Jump to sector 0x07E00
 
 ; Boot
-times 510-($-$$) db 0
-dw 0xAA55
-
+times 510 - ($-$$) db 0	; Set size 510
+dw 0xAA55				; Boot signature
