@@ -1,48 +1,64 @@
-bits 16
-[org 0x7C00]
-	mov si, text
-	call print
+[bits 32]
+
+section .text
 	
-	jmp $			; if failed to load, do nothing forever
-
-; Data
-text: db "Booting KittenOS...", 10, 13, 0
-
-; Functions
-print:
-	mov ah, 0x0E	; For int 0x10 - print
-	.loop:
-		lodsb		; Load si
-
-		cmp al, 0	; If end of string
-		je .done
-
-		int 0x10	; Print char from al
-		jmp .loop
+	global _start
+	extern kernelMain
 	
-	.done:
-		jmp load	; Load kernel after print
+	align 4
+	dd 0x1BADB002
+	dd 0x00
+	dd - (0x1BADB002 + 00)
 
-load:
-	cld				; Clear direction flag
+_start:
+	cli
+	mov esp, stack_top
+	mov ebp, stack_top
 
-	mov ax, 0		; For segment
-	mov ss, ax
-	mov sp, 0x7C00	; Stack from 0x07C00
+	call set_cpos
 
-	mov bx, 0x7E00
-	mov es, ax		; Read sector start from 0x7E00
+	call kernelMain
+	
+	cli
+	hlt
 
-	mov ah, 2		; Some boot stuff
-	mov al, 1
-	mov ch, 0
-	mov cl, 2
-	mov dh, 0
+posX db 0
+posY db 0
+cols equ 80
 
-	int 0x13
+set_cpos:
+	mov al, [posX]
+	mov cl, cols
+	mul cl
+	mov bx, ax
+	mov ax, [posY]
+	add bx, ax
+	mov cx, bx
 
-	jmp 0x0000:0x7E00	; Jump to sector 0x07E00
+	mov al, 0x0F
+	mov dx, 0x3D4
+	out dx, al
+	mov ax, cx
+	mov dx, 0x3D5
+	out dx, al
 
-; Boot
-times 510 - ($-$$) db 0	; Set size 510
-dw 0xAA55				; Boot signature
+	mov al, 0x0E
+	mov dx, 0x3D4
+	out dx, al
+	mov ax, cx
+	shr ax, 8
+	mov dx, 0x3D5
+	out dx, al
+
+	ret
+
+section .bss
+	align 4
+
+stack_bottom:
+	resb 8192
+
+stack_top:
+
+section .text
+
