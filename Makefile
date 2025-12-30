@@ -2,9 +2,9 @@ ASM	= nasm
 CC	= gcc
 LD	= ld
 
-LD_FLAGS	= -m elf_i386 -Map kernel.map
+LD_FLAGS	= -m elf_i386 -Map kernel.map --no-warn-rwx-segments
 ASM_FLAGS	= -f elf32
-CC_FLAGS	= -m32 -fno-pie -ffreestanding
+CC_FLAGS	= -m32 -ffreestanding
 
 BUILD_DIR	= build
 SOURCE_DIR	= src
@@ -24,13 +24,13 @@ IMAGE		= $(BUILD_DIR)/kernel.elf
 
 
 .PHONY: all makedirs clean run build link install update
-all: build link run
+all: clean build link run
 
 run: link
 	qemu-system-i386 -kernel $(IMAGE) -no-reboot -vga std -full-screen $(QEMU_FLAGS)
 
 link: build
-	@echo "--- Linking $(OBJECTS) ---"
+	@echo "--- Linking ---"
 	$(LD) $(LD_FLAGS) -T $(LINK_FILE) -o $(IMAGE) $(OBJECTS)
 
 	@cp $(GRUB_CFG_FILE) $(BUILD_DIR)
@@ -41,7 +41,8 @@ build: makedirs $(BUILD_INNER) $(OBJECTS)
 
 %.s.o: $(ASM_SOURCES)
 	@echo "--- Compiling $@ ---"
-	$(ASM) $(ASM_FLAGS) -o $@ $<
+	$(ASM) $(ASM_FLAGS) -o $@ $(patsubst $(BUILD_DIR)/%.o, $(SOURCE_DIR)/%,$@)
+	# $(patsubst %, -I%, $(BUILD_INNER))
 
 %.c.o: $(CC_SOURCES)
 	@echo "--- Compiling $@ ---"

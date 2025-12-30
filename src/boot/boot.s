@@ -60,5 +60,3 @@ stack_bottom:
 
 stack_top:
 
-section .text
-
