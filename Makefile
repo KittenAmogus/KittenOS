@@ -35,7 +35,7 @@ link: build
 
 	@cp $(GRUB_CFG_FILE) $(BUILD_DIR)
 
-	@rm -rf $(BUILD_INNER)
+	@rm -rf $(BUILD_INNER) kernel.map
 
 build: makedirs $(BUILD_INNER) $(OBJECTS)
 
@@ -50,7 +50,7 @@ build: makedirs $(BUILD_INNER) $(OBJECTS)
 $(IMAGE): link
 
 clean:
-	@rm -rf $(BUILD_DIR)
+	@rm -rf $(BUILD_DIR) kernel.map
 
 makedirs:
 	@echo "--- Directories $(BUILD_INNER) ---"
