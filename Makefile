@@ -4,7 +4,7 @@ LD	= ld
 
 LD_FLAGS	= -m elf_i386 -Map kernel.map
 ASM_FLAGS	= -f elf32
-CC_FLAGS	= -m32 -ffreestanding -fno-pie
+CC_FLAGS	= -m32 -fno-pie -ffreestanding
 
 BUILD_DIR	= build
 SOURCE_DIR	= src
@@ -27,7 +27,7 @@ IMAGE		= $(BUILD_DIR)/kernel.elf
 all: build link run
 
 run: link
-	qemu-system-i386 -kernel $(IMAGE) -no-reboot -vga std -full-screen
+	qemu-system-i386 -kernel $(IMAGE) -no-reboot -vga std -full-screen $(QEMU_FLAGS)
 
 link: build
 	@echo "--- Linking $(OBJECTS) ---"

@@ -15,6 +15,7 @@ void setPos( const uint_8 col, const uint_8 row ) {
 	cursorPos = col + (row * 80);
 }
 
+
 void clearScreen( void ) {
 	setPos( 0, 0 );
 	uint_16 i = 0;
@@ -55,4 +56,6 @@ void printString( const uint_8 *str ) {
 	}
 }
 
-
+void newline( void ) {
+	printString( "\n\r" );
+}

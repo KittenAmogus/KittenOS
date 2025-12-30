@@ -1,5 +1,7 @@
 #include "../utils/stdout.h"
 
+const uint_8 *prompt = "user@kittenOS $ ";
+
 const uint_8 *fetch_strings[ 15 ] = {"\n\r",
      "                  ______                  \n\r",
      "               .-\"      \"-.               \n\r",
@@ -19,28 +21,13 @@ const uint_8 *fetch_strings[ 15 ] = {"\n\r",
 
 
 int kernelMain( void ) {
-	setColor( 0x00 + 0x04 + 0x80 );
+	setColor( 0x02 );	// Green
 	clearScreen();
 	
-	for ( uint_8 i=0; i<2; i++ ) {
-		printString( "\n\r" );
-	}
 	for ( uint_8 i=0; i<15; i++ ) {
-		for ( uint_8 j=0; j<(80 - 43) / 2; j++ ) {
-			printChar( ' ' );
-		}
 		printString( fetch_strings[ i ] );
 	}
-
-	/*
-	for ( uint_8 row=0; row<16; row++ ) {
-		for (uint_8 col=0; col<16; col++ ) {
-			setColor( row * 16 + col );
-			printChar( (char)(0x41 + col) );
-		}
-		printString( "\n\r" );
-	}
-	*/
+	printString( prompt );
 
 	return 0;
 }
