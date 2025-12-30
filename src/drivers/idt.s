@@ -2,8 +2,9 @@ global read_port
 global write_port
 global load_idt
 global kb_handler
+global wait_time
 
-extern keyboard_handler
+extern keyboard_handler_main
 
 read_port:
 	mov edx, [esp + 4]
@@ -23,6 +24,9 @@ load_idt:
 	ret
 
 kb_handler:
-	call keyboard_handler
+	call keyboard_handler_main
 	iretd
+	hlt
 
+wait_time:
+	hlt

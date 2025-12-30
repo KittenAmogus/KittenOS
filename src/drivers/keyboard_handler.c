@@ -4,21 +4,20 @@
 extern int_8 read_port( uint_8 port );
 extern void write_port( uint_8 a, uint_8 b );
 
-void keyboard_init( void ) {
-	write_port(0x21, 0xFD);
-}
 
-void keyboard_handler( void ) {
+void keyboard_handler_main( void ) {
 	uint_8 status;
 	int_8 keycode;
-
+	
 	write_port( 0x20, 0x20 );
 
-	status = (uint_8)read_port( 0x64 );
+	status = read_port( 0x64 );
 	if ( status & 0x01 ) {
 		keycode = read_port( 0x60 );
 		if ( keycode > 0 )
-			printChar( 'z' );
+			printChar( 'd' );
+		else if ( keycode < 0 )
+			printChar( 'u' );
 	}
 }
 
