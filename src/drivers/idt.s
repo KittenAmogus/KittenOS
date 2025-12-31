@@ -2,7 +2,6 @@ global read_port
 global write_port
 global load_idt
 global kb_handler
-global wait_time
 
 extern keyboard_handler_main
 
@@ -26,7 +25,3 @@ load_idt:
 kb_handler:
 	call keyboard_handler_main
 	iretd
-	hlt
-
-wait_time:
-	hlt

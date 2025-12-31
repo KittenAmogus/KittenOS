@@ -1,7 +1,7 @@
 [bits 32]
 
 section .text
-	
+	; Multiboot header for GRUB
 	global _start
 	extern kernelMain
 	
@@ -11,14 +11,15 @@ section .text
 	dd - (0x1BADB002 + 00)
 
 _start:
+	; Setup stack
 	cli
 	mov esp, stack_top
 	mov ebp, stack_top
-
-	call set_cpos
-
-	call kernelMain
 	
+	call set_cpos		; Move BIOS cursor to 0, 0
+	call kernelMain		; Main function of kernel, written in C
+	
+	; Disable anything lower
 	cli
 	hlt
 
