@@ -41,7 +41,9 @@ int kernelMain( void ) {
 	while (1) {
 		asm volatile ( "hlt" );
 		if ( inputBufferLen >= 1 )
-			printChar( inputBuffer[ --inputBufferLen ] );
+			printChar( getCharPress(
+				inputBuffer[ --inputBufferLen ] )
+			);
 	}
 
 	return 0;

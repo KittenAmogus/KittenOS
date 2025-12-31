@@ -36,7 +36,7 @@ void printChar( const uint_8 ch ) {
 			cursorPos -= cursorPos % 80;
 			break;
 		}
-		case ('\t'): {
+		case ('\0'): {
 			break;
 		}
 		default: {
