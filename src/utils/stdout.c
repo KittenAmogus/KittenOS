@@ -30,6 +30,7 @@ void printChar( const uint_8 ch ) {
 	switch ( ch ) {
 		case ('\n'): {
 			cursorPos += 80;
+			cursorPos -= cursorPos % 80;
 			break;
 		}
 		case ('\r'): {
@@ -37,6 +38,14 @@ void printChar( const uint_8 ch ) {
 			break;
 		}
 		case ('\0'): {
+			break;
+		}
+		case ('\b'): {
+			if ( cursorPos == 0 )
+				break;
+			cursorPos --;
+			printChar( ' ' );
+			cursorPos --;
 			break;
 		}
 		default: {

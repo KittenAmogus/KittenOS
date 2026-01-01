@@ -3,7 +3,7 @@ global write_port
 global load_idt
 global kb_handler
 
-extern keyboard_handler_main
+extern on_key_pressed
 
 read_port:
 	mov edx, [esp + 4]
@@ -23,5 +23,5 @@ load_idt:
 	ret
 
 kb_handler:
-	call keyboard_handler_main
+	call on_key_pressed
 	iretd

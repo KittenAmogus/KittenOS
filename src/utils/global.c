@@ -1,16 +1,8 @@
 #include "global.h"
-#include "typedef.h"
 
-uint_8 inputBufferLen = 0;
+bool isShiftPressed = false;
 
-uint_8 inputBuffer[ 64 ] = {
-	0, 0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 0, 0, 0, 0
-};
+uint_8 inputBuffer[ 128 ];
+
+uint_8 inputBufferLength = 0;
 
