@@ -14,6 +14,7 @@ write_port:
 	mov edx, [esp + 4]
 	mov al, [esp + 4 + 4]
 	out dx, al
+	jmp $+2		; io wait
 	ret
 
 load_idt:
@@ -23,5 +24,7 @@ load_idt:
 	ret
 
 kb_handler:
+	pushad
 	call on_key_pressed
+	popad
 	iretd
