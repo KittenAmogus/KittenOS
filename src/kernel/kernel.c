@@ -26,6 +26,13 @@ const uint_8 *fetch_strings[ FETCH_LINES ] = {
      "(_/                                    \\_)\n\r"
 };
 
+const uint_8 *help_text = (
+	"HELP MENU:\n\r"
+	"fetch -- fetch\n\r"
+	"clear -- clear screen\n\r"
+	"help -- show this menu\n\r"
+);
+
 
 void shutdown( void ) {
 	// newline();
@@ -75,6 +82,10 @@ int kernelMain( void ) {
 		else if ( isBuffEqualString( buff, "halt" ) ) {
 			shutdown();
 			break;
+		}
+
+		else if ( isBuffEqualString( buff, "help" ) ) {
+			printString( help_text );
 		}
 
 		else {

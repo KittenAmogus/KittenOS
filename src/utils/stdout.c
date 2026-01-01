@@ -27,6 +27,9 @@ void clearScreen( void ) {
 }
 
 void printChar( const uint_8 ch ) {
+	if ( cursorPos >= 80 * 25 )
+		clearScreen();
+
 	switch ( ch ) {
 		case ('\n'): {
 			cursorPos += 80;
@@ -54,6 +57,7 @@ void printChar( const uint_8 ch ) {
 			cursorPos ++;
 			break;
 		}
+
 	}
 }
 
