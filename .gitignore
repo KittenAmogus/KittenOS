@@ -1,6 +1,8 @@
 *.elf
 *.img
 *.log
+*.iso
+iso
 build
 compile_commands.json
 

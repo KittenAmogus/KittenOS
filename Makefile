@@ -13,11 +13,12 @@ OBJECTS = $(patsubst src/%,build/%.o,$(CSOURCES) $(SSOURCES))
 # FILES
 TARGET = kernel
 LINKER = linker.ld
+ISOFILE = kittenos.iso
 
 EMULATOR_MEM = 32
 
 # RULES
-.PHONY: all clean qemu
+.PHONY: all $(ISOFILE) clean qemu
 
 all: $(TARGET).elf
 
@@ -33,6 +34,13 @@ build/%.o: src/%
 clean:
 	@echo ">> Cleaning up"
 	@rm -rf build
+
+$(ISOFILE): $(TARGET).elf
+	@mkdir -p iso/boot/grub
+	@echo ">> Creating ISO"
+	@echo "menuentry KittenOS { multiboot /boot/kittenos.elf; boot }" > iso/boot/grub/grub.cfg
+	@cp $< iso/boot/kittenos.elf
+	@grub-mkrescue -o $@ iso
 
 # RUN COMMANDS
 qemu: $(TARGET).elf
