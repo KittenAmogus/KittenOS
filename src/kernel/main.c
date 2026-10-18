@@ -42,5 +42,15 @@ int kmain(int magic, void *mbi) {
   vga_putat('*', 0, 24);
   vga_putat('*', 0, 0);
 
+  // Interrupt tests
+  asm volatile("int $0");
+  asm volatile("int $1");
+  asm volatile("int $2");
+  asm volatile("int $3");
+  asm volatile("int $4");
+  asm volatile("int $5");
+  asm volatile("int $32");
+  asm volatile("int $33");
+
   return 0;
 }

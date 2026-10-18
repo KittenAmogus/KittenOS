@@ -36,8 +36,8 @@ void vga_set_cursor(int col, int row);
 void vga_set_color(vga_color_e fg, vga_color_e bg);
 
 void vga_putc(char c);
-void vga_puts(char *s);
-void vga_put(char *s, int length);
+void vga_puts(const char *s);
+void vga_put(const char *s, int length);
 void vga_putat(char c, int col, int row);
 
 #endif // KERNEL_VGA_H

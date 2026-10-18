@@ -54,7 +54,7 @@ void vga_putc(char c) {
   }
 }
 
-void vga_puts(char *s) {
+void vga_puts(const char *s) {
   while (*s != 0) {
     vga_putc(*s);
     ++s;
@@ -62,7 +62,7 @@ void vga_puts(char *s) {
   vga_putc('\n');
 }
 
-void vga_put(char *s, int length) {
+void vga_put(const char *s, int length) {
   while (length > 0) {
     vga_putc(*s);
     ++s;

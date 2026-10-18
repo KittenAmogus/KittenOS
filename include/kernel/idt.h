@@ -16,6 +16,14 @@ typedef struct {
   uint32_t base;
 } __attribute__((packed)) idt_ptr_t;
 
+typedef struct {
+  uint8_t _bytes0[3];
+  uint8_t num;
+  uint8_t _bytes1[1];
+  int32_t jmp_offset;
+  uint8_t _bytes2[1];
+} __attribute__((packed)) idt_trampoline_t;
+
 void idt_create(void);
 
 #endif // IDT_H
