@@ -1,0 +1,6 @@
+*.elf
+*.img
+*.log
+build
+compile_commands.json
+
