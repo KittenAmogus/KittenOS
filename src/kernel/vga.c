@@ -6,6 +6,19 @@ static uint16_t vga_color = VGA_DEFAULT_COLOR;
 
 static uint16_t *vga_buffer = (uint16_t *)0xB8000;
 
+static void vga_scroll(void) {
+  for (int row=0; row<VGA_HEIGHT-1; ++row) {
+    for (int col=0; col<VGA_WIDTH; ++col) {
+      vga_buffer[VGA_POS(col, row)] = \
+        vga_buffer[VGA_POS(col, (row + 1))];
+    }
+  }
+
+  for (int col=0; col<VGA_WIDTH; ++col) {
+    vga_buffer[VGA_POS(col, (VGA_HEIGHT-1))] = VGA_CHAR(' ', vga_color);
+  }
+}
+
 void vga_clear(void) {
   for (int i = 0; i < VGA_SIZE; ++i) {
     vga_buffer[i] = VGA_CHAR(' ', vga_color);
@@ -25,6 +38,7 @@ void vga_set_color(vga_color_e fg, vga_color_e bg) {
 }
 
 void vga_putc(char c) {
+
   switch (c) {
   case 0:
     break;
@@ -51,6 +65,11 @@ void vga_putc(char c) {
 
   default:
     vga_buffer[vga_cursor++] = VGA_CHAR(c, vga_color);
+  }
+
+  if (vga_cursor >= VGA_SIZE) {
+    vga_scroll();
+    vga_cursor -= VGA_WIDTH;
   }
 }
 
