@@ -33,7 +33,7 @@ build/%.o: src/%
 
 clean:
 	@echo ">> Cleaning up"
-	@rm -rf build
+	@rm -rf iso build $(TARGET).elf $(ISOFILE)
 
 $(ISOFILE): $(TARGET).elf
 	@mkdir -p iso/boot/grub
