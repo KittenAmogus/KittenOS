@@ -1,3 +1,6 @@
+#include <kernel/gdt.h>
+#include <kernel/idt.h>
+
 #include <kernel/vga.h>
 
 int kmain(int magic, void *mbi) {
@@ -7,6 +10,10 @@ int kmain(int magic, void *mbi) {
   if (magic != 0x2BADB002) {
     return 1;
   }
+
+  // Init GDT and IDT
+  gdt_create();
+  idt_create();
 
   // Clear
   vga_clear();
