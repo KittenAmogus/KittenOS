@@ -1,5 +1,6 @@
 #include <kernel/gdt.h>
 #include <kernel/idt.h>
+#include <kernel/pic.h>
 
 #include <kernel/vga.h>
 
@@ -14,6 +15,9 @@ int kmain(int magic, void *mbi) {
   // Init GDT and IDT
   gdt_create();
   idt_create();
+
+  // Remap PIC
+  pic_remap();
 
   // Clear
   vga_clear();
