@@ -1,6 +1,8 @@
 #ifndef MBI_H
 #define MBI_H
 
+#include <stdint.h>
+
 typedef struct {
   uint32_t mem : 1;
   uint32_t boot_dev : 1;
@@ -13,8 +15,8 @@ typedef struct {
   uint32_t config : 1;
   uint32_t bootloader_name : 1;
   uint32_t apm : 1;
-  uint32_t vbe: 1;
-  uint32_t framebuffer: 1;
+  uint32_t vbe : 1;
+  uint32_t framebuffer : 1;
   uint32_t resv : 19;
 } mbi_flags_t;
 
